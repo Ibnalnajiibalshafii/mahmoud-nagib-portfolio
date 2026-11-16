@@ -2,7 +2,7 @@ import { SceneBackdrop } from "@/components/scene-backdrop";
 import { SectionZoom } from "@/components/section-zoom";
 import { SiteHeader } from "@/components/site-header";
 import { listProjects } from "@/lib/projects";
-import { getContact, getPortrait, listPages, listSkills } from "@/lib/site";
+import { getAbout, getContact, getPortrait, listPages, listSkills } from "@/lib/site";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import {
   BarChart3,
@@ -22,14 +22,15 @@ import {
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const [projects, contact, pages, portrait, skills] = await Promise.all([
+    const [projects, contact, pages, portrait, skills, about] = await Promise.all([
       listProjects(),
       getContact(),
       listPages(),
       getPortrait(),
       listSkills(),
+      getAbout(),
     ]);
-    return { projects, contact, pages, portrait, skills };
+    return { projects, contact, pages, portrait, skills, about };
   },
   head: () => ({
     meta: [{ title: "Mahmoud Nagib | Junior Data Analyst" }],
@@ -155,14 +156,10 @@ function Home() {
                 ) : null}
               </div>
               <div className="border-t border-line p-8 md:border-t-0 md:border-l md:p-10">
-                <p className="text-lg leading-relaxed text-slate-300">
-                  I am a junior data analyst in Nairobi. I take a raw file, check what can be
-                  trusted, and turn it into a comparison a team can use.
-                </p>
-                <p className="mt-4 text-lg leading-relaxed text-slate-300">
-                  The dashboards on this site cover supermarket sales, bank branch performance, and
-                  student scores. Each one names the result, the figure behind it, and the next step.
-                </p>
+                <p className="text-lg leading-relaxed text-slate-300">{data.about.lead}</p>
+                {data.about.more ? (
+                  <p className="mt-4 text-lg leading-relaxed text-slate-300">{data.about.more}</p>
+                ) : null}
                 <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {data.skills.map((item, index) => {
                     const Icon = [BarChart3, Table2, Database, PieChart, Lightbulb][index % 5];

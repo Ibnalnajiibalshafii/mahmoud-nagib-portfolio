@@ -10,14 +10,17 @@ import {
 import {
   deletePage,
   deleteSkill,
+  getAbout,
   getContact,
   getPortrait,
   listPages,
   listSkills,
   savePage,
   saveSkill,
+  updateAbout,
   updateContact,
   updatePortrait,
+  type SiteAbout,
   type SiteContact,
   type SitePage,
   type SiteSkill,
@@ -27,14 +30,15 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 
 export const Route = createFileRoute("/admin")({
   loader: async () => {
-    const [projects, contact, pages, portrait, skills] = await Promise.all([
+    const [projects, contact, pages, portrait, skills, about] = await Promise.all([
       listProjects(),
       getContact(),
       listPages(),
       getPortrait(),
       listSkills(),
+      getAbout(),
     ]);
-    return { projects, contact, pages, portrait, skills };
+    return { projects, contact, pages, portrait, skills, about };
   },
   head: () => ({ meta: [{ title: "Admin | Mahmoud Nagib" }] }),
   component: AdminPage,
@@ -297,6 +301,7 @@ function AdminPage() {
             {section === "about" ? (
               <AboutEditor
                 portrait={data.portrait}
+                about={data.about}
                 skills={data.skills}
                 password={password}
                 onSaved={async () => {
@@ -511,16 +516,20 @@ function ContactEditor({
 
 function AboutEditor({
   portrait,
+  about,
   skills,
   password,
   onSaved,
 }: {
   portrait: string;
+  about: SiteAbout;
   skills: SiteSkill[];
   password: string;
   onSaved: () => Promise<void>;
 }) {
   const [photo, setPhoto] = useState(portrait);
+  const [lead, setLead] = useState(about.lead);
+  const [more, setMore] = useState(about.more);
   const [label, setLabel] = useState("");
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
@@ -558,6 +567,24 @@ function AboutEditor({
       await onSaved();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not save the photo.");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function onSaveAbout(event: FormEvent) {
+    event.preventDefault();
+    setPending(true);
+    setError("");
+    setSavedNote("");
+    try {
+      const saved = await updateAbout({ data: { lead, more, password } });
+      setLead(saved.lead);
+      setMore(saved.more);
+      setSavedNote("About text updated.");
+      await onSaved();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not save the About text.");
     } finally {
       setPending(false);
     }
@@ -628,6 +655,26 @@ function AboutEditor({
             Use original photo
           </button>
         </div>
+      </form>
+
+      <form onSubmit={onSaveAbout} className="panel space-y-4 rounded-2xl p-6">
+        <h2 className="text-xl font-bold">About text</h2>
+        <p className="text-muted">These two paragraphs show under About Me, next to your photo.</p>
+        <label className="block">
+          <span className="mb-1 block text-sm text-muted">First paragraph</span>
+          <textarea required rows={4} value={lead} onChange={(event) => setLead(event.target.value)} className={fieldClass()} />
+        </label>
+        <label className="block">
+          <span className="mb-1 block text-sm text-muted">Second paragraph</span>
+          <textarea rows={4} value={more} onChange={(event) => setMore(event.target.value)} className={fieldClass()} />
+        </label>
+        <button
+          type="submit"
+          disabled={pending}
+          className="rounded-full bg-teal px-6 py-3 font-medium text-white transition hover:bg-copper disabled:opacity-60"
+        >
+          Save about text
+        </button>
       </form>
 
       <form onSubmit={onAddSkill} className="panel space-y-4 rounded-2xl p-6">

@@ -127,7 +127,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-DXRMMfVd.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-C41gU9A1.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -149,71 +149,79 @@ async function getStartManifest(matchedRoutes) {
 var manifest = {
 	"0292ed52df1b9f98c8887892dbcbaedc792a1fe75fdfcd7d1c0563f9df8f5ec3": {
 		functionName: "unlockAdmin_createServerFn_handler",
-		importer: () => import("./projects-CiZN45MY.mjs")
+		importer: () => import("./projects-BNRGp2bR.mjs")
 	},
 	"05227a15742113eeebd4ee7e297dc3eebb684a9b08ca1352c615f61cd8ff7b04": {
 		functionName: "getContact_createServerFn_handler",
-		importer: () => import("./site-B2akujxV.mjs")
+		importer: () => import("./site-DNBLWpkl.mjs")
 	},
 	"06ff4630317c492c8f93960414b719df66e82234df77963ffa4427cfe4e5e4e6": {
 		functionName: "deletePage_createServerFn_handler",
-		importer: () => import("./site-B2akujxV.mjs")
+		importer: () => import("./site-DNBLWpkl.mjs")
 	},
 	"0cde20bf2923e43ce851c38266c70a19b62f843c9a6d3397b7d6d804c679f54d": {
 		functionName: "updatePortrait_createServerFn_handler",
-		importer: () => import("./site-B2akujxV.mjs")
+		importer: () => import("./site-DNBLWpkl.mjs")
 	},
 	"371178daf4db2c58018d816a08785d2b5fb4e6ce9b5573d382e4b05dd9c05014": {
 		functionName: "savePage_createServerFn_handler",
-		importer: () => import("./site-B2akujxV.mjs")
+		importer: () => import("./site-DNBLWpkl.mjs")
 	},
 	"4cf0bb0bf226dc7f0ff57e513e07f91c80a05bcfe848e04ccc6b844d0223a621": {
 		functionName: "saveSkill_createServerFn_handler",
-		importer: () => import("./site-B2akujxV.mjs")
+		importer: () => import("./site-DNBLWpkl.mjs")
 	},
 	"6ae565c05b0d7e05a10ebb3ae962b787cb8b045cffd5d9dc618f0911f361e385": {
 		functionName: "updateProject_createServerFn_handler",
-		importer: () => import("./projects-CiZN45MY.mjs")
+		importer: () => import("./projects-BNRGp2bR.mjs")
 	},
 	"7a36febddc9c6499f718dd1f453e12d6ddb7cb35acf28a1f093f8c07a3d87f15": {
 		functionName: "listProjects_createServerFn_handler",
-		importer: () => import("./projects-CiZN45MY.mjs")
+		importer: () => import("./projects-BNRGp2bR.mjs")
 	},
 	"9cbfe932944e37b0692cde3ad424a759068c06ecb8b8966f43f8fb4ca654ea4c": {
 		functionName: "listPages_createServerFn_handler",
-		importer: () => import("./site-B2akujxV.mjs")
+		importer: () => import("./site-DNBLWpkl.mjs")
 	},
 	"a6d5feb012adb5e1b78c5e5a1f48ac73acebfc31889e747de658667c78699547": {
 		functionName: "createProject_createServerFn_handler",
-		importer: () => import("./projects-CiZN45MY.mjs")
+		importer: () => import("./projects-BNRGp2bR.mjs")
 	},
 	"ba33d18021e14ba744ba54115823a27d329833aada496be5b94b37b0893f8f63": {
 		functionName: "getProject_createServerFn_handler",
-		importer: () => import("./projects-CiZN45MY.mjs")
+		importer: () => import("./projects-BNRGp2bR.mjs")
+	},
+	"c08d9e618e08bd895de41f75207cdba6fca20a452afbd6e4b8b33ca58c497977": {
+		functionName: "updateAbout_createServerFn_handler",
+		importer: () => import("./site-DNBLWpkl.mjs")
 	},
 	"c885eed991fbd1f67948582cee981ae2587c59208eae6e80acec565666e57a6c": {
 		functionName: "getPage_createServerFn_handler",
-		importer: () => import("./site-B2akujxV.mjs")
+		importer: () => import("./site-DNBLWpkl.mjs")
 	},
 	"ca0174d3c5bffd31c9f9bcb984c137102c8b43e8a498d49b24518c9889ae3a24": {
 		functionName: "deleteSkill_createServerFn_handler",
-		importer: () => import("./site-B2akujxV.mjs")
+		importer: () => import("./site-DNBLWpkl.mjs")
 	},
 	"d5543ab6ab66b1c792dfa21af4caf169839ae0d708d3f08e2e8a59d41079083c": {
 		functionName: "updateContact_createServerFn_handler",
-		importer: () => import("./site-B2akujxV.mjs")
+		importer: () => import("./site-DNBLWpkl.mjs")
 	},
 	"da2ebc76f7bb4473135743f575930206aa48400009f434ffc524f4243c8d309d": {
 		functionName: "listSkills_createServerFn_handler",
-		importer: () => import("./site-B2akujxV.mjs")
+		importer: () => import("./site-DNBLWpkl.mjs")
 	},
 	"e5259a3f97b222e9c12cfe9f11677c1f931633be180e1058bfaeac07ecdc81e5": {
 		functionName: "deleteProject_createServerFn_handler",
-		importer: () => import("./projects-CiZN45MY.mjs")
+		importer: () => import("./projects-BNRGp2bR.mjs")
+	},
+	"e5743b5b5734f52aceb3404cab8d3203f51b0b61de722d1e3a199e52ed6493ac": {
+		functionName: "getAbout_createServerFn_handler",
+		importer: () => import("./site-DNBLWpkl.mjs")
 	},
 	"f7f79338b6252cb308c2ef0f41479dccbd50358941c23a6d0022f6d377925466": {
 		functionName: "getPortrait_createServerFn_handler",
-		importer: () => import("./site-B2akujxV.mjs")
+		importer: () => import("./site-DNBLWpkl.mjs")
 	}
 };
 async function getServerFnById(id, access) {
@@ -1618,7 +1626,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-DAlge_J4.mjs").then((n) => n.t),
+		import("./router-Br7gxkbg.mjs").then((n) => n.t),
 		import("./start-5Z2QO8AU.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);

@@ -19,6 +19,16 @@ export type SitePage = {
   body: string;
 };
 
+export type SiteAbout = {
+  lead: string;
+  more: string;
+};
+
+const fallbackAbout: SiteAbout = {
+  lead: "I am a junior data analyst in Nairobi. I take a raw file, check what can be trusted, and turn it into a comparison a team can use.",
+  more: "The dashboards on this site cover supermarket sales, bank branch performance, and student scores. Each one names the result, the figure behind it, and the next step.",
+};
+
 export type SiteSkill = {
   id: number;
   label: string;
@@ -136,6 +146,37 @@ export const updatePortrait = createServerFn({ method: "POST" })
       on conflict (id) do update set portrait = excluded.portrait
     `;
     return { portrait };
+  });
+
+export const getAbout = createServerFn({ method: "GET" }).handler(async () => {
+  const sql = await getSql();
+  const rows = await sql<SiteAbout>`
+    select about_lead as lead, about_more as more from site_profile where id = 1
+  `;
+  const row = rows[0];
+  if (!row || !row.lead) return fallbackAbout;
+  return { lead: row.lead, more: row.more };
+});
+
+export const updateAbout = createServerFn({ method: "POST" })
+  .validator((input: SiteAbout & { password: string }) => ({
+    lead: clean(input.lead, 800),
+    more: clean(input.more, 800),
+    password: String(input.password ?? ""),
+  }))
+  .handler(async ({ data }) => {
+    assertOwner(data.password);
+    if (!data.lead) throw new Error("Write the first About paragraph.");
+    const sql = await getSql();
+    const rows = await sql<SiteAbout>`
+      insert into site_profile (id, portrait, about_lead, about_more)
+      values (1, '', ${data.lead}, ${data.more})
+      on conflict (id) do update
+      set about_lead = excluded.about_lead,
+          about_more = excluded.about_more
+      returning about_lead as lead, about_more as more
+    `;
+    return rows[0] ?? fallbackAbout;
   });
 
 export const listSkills = createServerFn({ method: "GET" }).handler(async () => {
