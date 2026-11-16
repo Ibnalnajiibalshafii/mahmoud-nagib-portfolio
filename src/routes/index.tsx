@@ -2,7 +2,7 @@ import { SceneBackdrop } from "@/components/scene-backdrop";
 import { SectionZoom } from "@/components/section-zoom";
 import { SiteHeader } from "@/components/site-header";
 import { listProjects } from "@/lib/projects";
-import { getContact, listPages } from "@/lib/site";
+import { getContact, getPortrait, listPages, listSkills } from "@/lib/site";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import {
   BarChart3,
@@ -22,8 +22,14 @@ import {
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const [projects, contact, pages] = await Promise.all([listProjects(), getContact(), listPages()]);
-    return { projects, contact, pages };
+    const [projects, contact, pages, portrait, skills] = await Promise.all([
+      listProjects(),
+      getContact(),
+      listPages(),
+      getPortrait(),
+      listSkills(),
+    ]);
+    return { projects, contact, pages, portrait, skills };
   },
   head: () => ({
     meta: [{ title: "Mahmoud Nagib | Junior Data Analyst" }],
@@ -68,6 +74,12 @@ function Home() {
   const data = Route.useLoaderData();
   const custom = data.projects;
   const contact = data.contact;
+  const portrait = data.portrait || "/portrait.jpg";
+  const socials = [
+    { href: contact.youtube, label: "YouTube", kind: "youtube" as const },
+    { href: contact.tiktok, label: "TikTok", kind: "tiktok" as const },
+    { href: contact.instagram, label: "Instagram", kind: "instagram" as const },
+  ].filter((item) => item.href);
   return (
     <>
       <SceneBackdrop />
@@ -115,7 +127,7 @@ function Home() {
             <div className="panel rise mt-12 overflow-hidden rounded-3xl md:grid md:grid-cols-[17rem_1fr]">
               <div className="flex flex-col items-center bg-gradient-to-b from-teal/25 via-teal/10 to-transparent px-8 py-10 text-center">
                 <img
-                  src="/portrait.jpg"
+                  src={portrait}
                   alt="Mahmoud Nagib"
                   className="portrait-pop size-44 rounded-full object-cover shadow-2xl ring-4 ring-teal"
                 />
@@ -123,41 +135,52 @@ function Home() {
                 <p className="mt-1 text-teal">Junior Data Analyst</p>
                 <p className="mt-3 inline-flex items-center gap-2 text-sm text-muted">
                   <MapPin aria-hidden="true" className="size-4 text-teal" />
-                  Nairobi, Kenya
+                  {contact.location}
                 </p>
+                {socials.length > 0 ? (
+                  <div className="mt-5 flex gap-3">
+                    {socials.map((item) => (
+                      <a
+                        key={item.kind}
+                        href={item.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={item.label}
+                        className="transition hover:scale-105"
+                      >
+                        <SocialIcon kind={item.kind} />
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
               </div>
               <div className="border-t border-line p-8 md:border-t-0 md:border-l md:p-10">
                 <p className="text-lg leading-relaxed text-slate-300">
-                  I'm a junior data analyst in Nairobi. The work so far is academic: Python with
-                  pandas, matplotlib, and seaborn, plus Excel practicals. I turn a messy file into a
-                  clear comparison and a recommendation.
+                  I am a junior data analyst in Nairobi. I take a raw file, check what can be
+                  trusted, and turn it into a comparison a team can use.
                 </p>
                 <p className="mt-4 text-lg leading-relaxed text-slate-300">
-                  I'm building a freelance practice for small teams that want the analysis
-                  without a heavy setup. SQL is part of that toolkit, alongside the notebooks and
-                  spreadsheets already on this site.
+                  The dashboards on this site cover supermarket sales, bank branch performance, and
+                  student scores. Each one names the result, the figure behind it, and the next step.
                 </p>
                 <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {[
-                    { icon: BarChart3, label: "Python & Pandas", note: "Cleaning and aggregation" },
-                    { icon: Table2, label: "Excel", note: "PivotTables and formulas" },
-                    { icon: Database, label: "SQL", note: "Queries and joins" },
-                    { icon: PieChart, label: "Visualization", note: "Charts that explain" },
-                    { icon: Lightbulb, label: "Reporting", note: "Findings and next steps" },
-                  ].map((item) => (
+                  {data.skills.map((item, index) => {
+                    const Icon = [BarChart3, Table2, Database, PieChart, Lightbulb][index % 5];
+                    return (
                     <div
-                      key={item.label}
+                      key={item.id}
                       className="panel rise skill-tile card-lift rounded-2xl"
                     >
                       <div className="flex items-start gap-3 p-4">
-                      <item.icon aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-teal" />
+                      <Icon aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-teal" />
                       <div>
                         <p className="font-semibold">{item.label}</p>
-                        <p className="text-sm text-muted">{item.note}</p>
+                        {item.note ? <p className="text-sm text-muted">{item.note}</p> : null}
                       </div>
                     </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -167,9 +190,7 @@ function Home() {
         <section id="projects" className="zoom-section section-glass py-20">
           <div className="mx-auto max-w-7xl px-6">
             <h2 className="rise mb-4 text-center text-4xl font-bold">Featured Projects</h2>
-            <p className="mb-12 text-center text-muted">
-              Academic assignments and a practical exam, now as live dashboards
-            </p>
+            <p className="mb-12 text-center text-muted">Three analyses, each with a live dashboard</p>
             <div className="grid gap-8 md:grid-cols-3">
               {projects.map((project) => (
                 <Link
@@ -266,11 +287,32 @@ function Home() {
           </div>
         </section>
 
+        <section id="social" className="zoom-section section-glass py-20">
+          <div className="mx-auto max-w-3xl px-6 text-center">
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-teal">Social</p>
+            <h2 className="mt-3 text-4xl font-bold">Find me online</h2>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-8">
+              {socials.map((item) => (
+                <a
+                  key={item.kind}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex flex-col items-center gap-3"
+                >
+                  <SocialIcon kind={item.kind} large />
+                  <span className="text-sm font-medium text-slate-300 group-hover:text-teal">{item.label}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section id="contact" className="zoom-section section-glass py-20">
           <div className="mx-auto max-w-3xl px-6 text-center">
             <h2 className="mb-4 text-4xl font-bold">Let's Work Together</h2>
             <p className="mb-8 text-lg text-muted">
-              Available for freelance data analysis projects. Reach out to discuss your needs.
+              Open to data analysis work. Reach out and tell me what you need looked at.
             </p>
             <div className="panel rise inline-block rounded-2xl p-8 text-left">
               <a
@@ -309,5 +351,39 @@ function Home() {
         </footer>
       </main>
     </>
+  );
+}
+
+function SocialIcon({ kind, large = false }: { kind: "youtube" | "tiktok" | "instagram"; large?: boolean }) {
+  const size = large ? "size-16" : "size-11";
+  if (kind === "youtube") {
+    return (
+      <span className={`inline-flex ${size} items-center justify-center rounded-2xl bg-[#ff0033] text-white shadow-lg`}>
+        <svg viewBox="0 0 24 24" className={large ? "size-8" : "size-6"} aria-hidden="true" fill="currentColor">
+          <path d="M23 12.2s0-3.2-.4-4.6c-.2-.9-.9-1.6-1.8-1.8C19.2 5.4 12 5.4 12 5.4s-7.2 0-8.8.4c-.9.2-1.6.9-1.8 1.8C1 9 1 12.2 1 12.2s0 3.2.4 4.6c.2.9.9 1.6 1.8 1.8 1.6.4 8.8.4 8.8.4s7.2 0 8.8-.4c.9-.2 1.6-.9 1.8-1.8.4-1.4.4-4.6.4-4.6zM9.8 15.5v-6.6l6.2 3.3-6.2 3.3z" />
+        </svg>
+      </span>
+    );
+  }
+  if (kind === "tiktok") {
+    return (
+      <span className={`inline-flex ${size} items-center justify-center rounded-2xl bg-black text-white shadow-lg ring-1 ring-white/20`}>
+        <svg viewBox="0 0 24 24" className={large ? "size-8" : "size-6"} aria-hidden="true" fill="currentColor">
+          <path d="M14.5 3c.4 2.4 1.8 4.1 4.1 4.4v2.6c-1.4 0-2.7-.4-3.9-1.2v6.5c0 3.4-2.6 6.2-6.1 6.2S2.5 18.7 2.5 15.3c0-3.3 2.6-6 5.9-6.2v2.7c-1.7.2-3 1.6-3 3.4 0 1.9 1.5 3.4 3.4 3.4s3.4-1.5 3.4-3.4V3h2.3z" />
+        </svg>
+      </span>
+    );
+  }
+  return (
+    <span
+      className={`inline-flex ${size} items-center justify-center rounded-2xl text-white shadow-lg`}
+      style={{ background: "radial-gradient(circle at 30% 110%, #feda75, #fa7e1e 35%, #d62976 60%, #962fbf 80%, #4f5bd5)" }}
+    >
+      <svg viewBox="0 0 24 24" className={large ? "size-8" : "size-6"} aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <rect x="4" y="4" width="16" height="16" rx="5" />
+        <circle cx="12" cy="12" r="3.5" />
+        <circle cx="17.2" cy="6.8" r="0.8" fill="currentColor" stroke="none" />
+      </svg>
+    </span>
   );
 }

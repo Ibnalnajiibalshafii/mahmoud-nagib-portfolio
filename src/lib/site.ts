@@ -7,6 +7,9 @@ export type SiteContact = {
   phone: string;
   linkedin: string;
   location: string;
+  youtube: string;
+  tiktok: string;
+  instagram: string;
 };
 
 export type SitePage = {
@@ -16,12 +19,29 @@ export type SitePage = {
   body: string;
 };
 
+export type SiteSkill = {
+  id: number;
+  label: string;
+  note: string;
+};
+
 const fallbackContact: SiteContact = {
   email: "mahmuodnagib9@gmail.com",
   phone: "+254 745 791 267",
   linkedin: "https://www.linkedin.com/in/mahmoudnagib001",
   location: "Nairobi, Kenya",
+  youtube: "https://www.youtube.com/@mahmoudnagibmotivation",
+  tiktok: "https://www.tiktok.com/@growwithmahmoud",
+  instagram: "https://www.instagram.com/grow.withmahmoud",
 };
+
+const fallbackSkills: SiteSkill[] = [
+  { id: 1, label: "Python & Pandas", note: "Cleaning and aggregation" },
+  { id: 2, label: "Excel", note: "PivotTables and formulas" },
+  { id: 3, label: "SQL", note: "Queries and joins" },
+  { id: 4, label: "Visualization", note: "Charts that explain" },
+  { id: 5, label: "Reporting", note: "Findings and next steps" },
+];
 
 const reserved = new Set(["admin", "api", "work", "login", "p", "projects"]);
 
@@ -39,10 +59,17 @@ function readSlug(value: unknown): string {
   return slug;
 }
 
+function linkOrEmpty(value: string): string {
+  const text = value.trim();
+  if (!text) return "";
+  return /^https?:\/\//i.test(text) ? text : `https://${text}`;
+}
+
 export const getContact = createServerFn({ method: "GET" }).handler(async () => {
   const sql = await getSql();
   const rows = await sql<SiteContact>`
-    select email, phone, linkedin, location from site_contact where id = 1
+    select email, phone, linkedin, location, youtube, tiktok, instagram
+    from site_contact where id = 1
   `;
   return rows[0] ?? fallbackContact;
 });
@@ -53,6 +80,9 @@ export const updateContact = createServerFn({ method: "POST" })
     phone: clean(input.phone, 40),
     linkedin: clean(input.linkedin, 200),
     location: clean(input.location, 80),
+    youtube: clean(input.youtube, 240),
+    tiktok: clean(input.tiktok, 240),
+    instagram: clean(input.instagram, 240),
     password: String(input.password ?? ""),
   }))
   .handler(async ({ data }) => {
@@ -60,20 +90,93 @@ export const updateContact = createServerFn({ method: "POST" })
     if (!data.email.includes("@")) throw new Error("Enter a valid email.");
     if (!data.phone) throw new Error("Enter a phone number.");
     if (!data.location) throw new Error("Enter a location.");
-    let linkedin = data.linkedin;
-    if (linkedin && !/^https?:\/\//i.test(linkedin)) linkedin = `https://${linkedin}`;
+    const linkedin = linkOrEmpty(data.linkedin);
+    const youtube = linkOrEmpty(data.youtube);
+    const tiktok = linkOrEmpty(data.tiktok);
+    const instagram = linkOrEmpty(data.instagram);
     const sql = await getSql();
     const rows = await sql<SiteContact>`
-      insert into site_contact (id, email, phone, linkedin, location)
-      values (1, ${data.email}, ${data.phone}, ${linkedin}, ${data.location})
+      insert into site_contact (id, email, phone, linkedin, location, youtube, tiktok, instagram)
+      values (1, ${data.email}, ${data.phone}, ${linkedin}, ${data.location}, ${youtube}, ${tiktok}, ${instagram})
       on conflict (id) do update
       set email = excluded.email,
           phone = excluded.phone,
           linkedin = excluded.linkedin,
-          location = excluded.location
-      returning email, phone, linkedin, location
+          location = excluded.location,
+          youtube = excluded.youtube,
+          tiktok = excluded.tiktok,
+          instagram = excluded.instagram
+      returning email, phone, linkedin, location, youtube, tiktok, instagram
     `;
     return rows[0] ?? fallbackContact;
+  });
+
+export const getPortrait = createServerFn({ method: "GET" }).handler(async () => {
+  const sql = await getSql();
+  const rows = await sql<{ portrait: string }>`select portrait from site_profile where id = 1`;
+  return rows[0]?.portrait ?? "";
+});
+
+export const updatePortrait = createServerFn({ method: "POST" })
+  .validator((input: { portrait: string; password: string }) => ({
+    portrait: String(input.portrait ?? ""),
+    password: String(input.password ?? ""),
+  }))
+  .handler(async ({ data }) => {
+    assertOwner(data.password);
+    const portrait = data.portrait.trim();
+    if (portrait && !portrait.startsWith("data:image/")) {
+      throw new Error("Choose an image file.");
+    }
+    if (portrait.length > 1_400_000) throw new Error("Use a photo under 1 MB.");
+    const sql = await getSql();
+    await sql`
+      insert into site_profile (id, portrait)
+      values (1, ${portrait})
+      on conflict (id) do update set portrait = excluded.portrait
+    `;
+    return { portrait };
+  });
+
+export const listSkills = createServerFn({ method: "GET" }).handler(async () => {
+  const sql = await getSql();
+  const rows = await sql<SiteSkill>`
+    select id, label, note from site_skills order by sort, id
+  `;
+  return rows.length ? rows : fallbackSkills;
+});
+
+export const saveSkill = createServerFn({ method: "POST" })
+  .validator((input: { label: string; note: string; password: string }) => ({
+    label: clean(input.label, 60),
+    note: clean(input.note, 80),
+    password: String(input.password ?? ""),
+  }))
+  .handler(async ({ data }) => {
+    assertOwner(data.password);
+    if (!data.label) throw new Error("Add a skill name.");
+    const sql = await getSql();
+    const next = await sql<{ sort: number }>`select coalesce(max(sort), 0) + 1 as sort from site_skills`;
+    const sort = Number(next[0]?.sort ?? 1);
+    const rows = await sql<SiteSkill>`
+      insert into site_skills (label, note, sort)
+      values (${data.label}, ${data.note}, ${sort})
+      returning id, label, note
+    `;
+    return rows[0];
+  });
+
+export const deleteSkill = createServerFn({ method: "POST" })
+  .validator((input: { id: number; password: string }) => ({
+    id: Number(input.id),
+    password: String(input.password ?? ""),
+  }))
+  .handler(async ({ data }) => {
+    assertOwner(data.password);
+    if (!Number.isInteger(data.id) || data.id < 1) throw new Error("Unknown skill.");
+    const sql = await getSql();
+    await sql`delete from site_skills where id = ${data.id}`;
+    return { ok: true as const };
   });
 
 export const listPages = createServerFn({ method: "GET" }).handler(async () => {

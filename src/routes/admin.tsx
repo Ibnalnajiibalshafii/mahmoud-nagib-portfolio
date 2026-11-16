@@ -9,20 +9,32 @@ import {
 } from "@/lib/projects";
 import {
   deletePage,
+  deleteSkill,
   getContact,
+  getPortrait,
   listPages,
+  listSkills,
   savePage,
+  saveSkill,
   updateContact,
+  updatePortrait,
   type SiteContact,
   type SitePage,
+  type SiteSkill,
 } from "@/lib/site";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 
 export const Route = createFileRoute("/admin")({
   loader: async () => {
-    const [projects, contact, pages] = await Promise.all([listProjects(), getContact(), listPages()]);
-    return { projects, contact, pages };
+    const [projects, contact, pages, portrait, skills] = await Promise.all([
+      listProjects(),
+      getContact(),
+      listPages(),
+      getPortrait(),
+      listSkills(),
+    ]);
+    return { projects, contact, pages, portrait, skills };
   },
   head: () => ({ meta: [{ title: "Admin | Mahmoud Nagib" }] }),
   component: AdminPage,
@@ -36,7 +48,7 @@ function AdminPage() {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [unlocked, setUnlocked] = useState(false);
-  const [section, setSection] = useState<"projects" | "pages" | "contact">("projects");
+  const [section, setSection] = useState<"projects" | "pages" | "contact" | "about">("projects");
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState<number | null>(null);
   const [error, setError] = useState("");
@@ -110,7 +122,7 @@ function AdminPage() {
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-teal">Admin</p>
         <h1 className="mt-2 text-4xl font-bold">Site admin</h1>
         <p className="mt-3 text-muted">
-          Add projects and pages, or update the contact details visitors see.
+          Add projects and pages, update contact and social links, or change the About photo and skills.
         </p>
 
         {unlocked ? null : (
@@ -145,6 +157,7 @@ function AdminPage() {
                   ["projects", "Projects"],
                   ["pages", "Pages"],
                   ["contact", "Contact"],
+                  ["about", "About"],
                 ] as const
               ).map(([id, label]) => (
                 <button
@@ -275,6 +288,16 @@ function AdminPage() {
             {section === "contact" ? (
               <ContactEditor
                 contact={data.contact}
+                password={password}
+                onSaved={async () => {
+                  await router.invalidate();
+                }}
+              />
+            ) : null}
+            {section === "about" ? (
+              <AboutEditor
+                portrait={data.portrait}
+                skills={data.skills}
                 password={password}
                 onSaved={async () => {
                   await router.invalidate();
@@ -451,19 +474,22 @@ function ContactEditor({
 
   return (
     <form onSubmit={onSubmit} className="panel mt-8 space-y-4 rounded-2xl p-6">
-      <p className="text-muted">These details show in the header and the contact section.</p>
+      <p className="text-muted">These details show in the header, contact section, and social icons.</p>
       {(
         [
           ["email", "Email"],
           ["phone", "Phone"],
           ["linkedin", "LinkedIn"],
           ["location", "Location"],
+          ["youtube", "YouTube"],
+          ["tiktok", "TikTok"],
+          ["instagram", "Instagram"],
         ] as const
       ).map(([key, label]) => (
         <label key={key} className="block">
           <span className="mb-1 block text-sm text-muted">{label}</span>
           <input
-            required={key !== "linkedin"}
+            required={key === "email" || key === "phone" || key === "location"}
             value={form[key]}
             onChange={(event) => setForm({ ...form, [key]: event.target.value })}
             className={fieldClass()}
@@ -480,6 +506,165 @@ function ContactEditor({
         Save contact
       </button>
     </form>
+  );
+}
+
+function AboutEditor({
+  portrait,
+  skills,
+  password,
+  onSaved,
+}: {
+  portrait: string;
+  skills: SiteSkill[];
+  password: string;
+  onSaved: () => Promise<void>;
+}) {
+  const [photo, setPhoto] = useState(portrait);
+  const [label, setLabel] = useState("");
+  const [note, setNote] = useState("");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
+  const [savedNote, setSavedNote] = useState("");
+
+  function onPick(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.currentTarget.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("Choose an image file.");
+      return;
+    }
+    if (file.size > 1_000_000) {
+      setError("Use a photo under 1 MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPhoto(String(reader.result ?? ""));
+      setError("");
+      setSavedNote("");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function savePhoto(next: string) {
+    setPending(true);
+    setError("");
+    setSavedNote("");
+    try {
+      const saved = await updatePortrait({ data: { portrait: next, password } });
+      setPhoto(saved.portrait);
+      setSavedNote(next ? "About photo updated." : "About photo reset.");
+      await onSaved();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not save the photo.");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function onAddSkill(event: FormEvent) {
+    event.preventDefault();
+    setPending(true);
+    setError("");
+    setSavedNote("");
+    try {
+      await saveSkill({ data: { label, note, password } });
+      setLabel("");
+      setNote("");
+      setSavedNote("Skill added.");
+      await onSaved();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not add that skill.");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function onRemoveSkill(id: number) {
+    setPending(true);
+    setError("");
+    try {
+      await deleteSkill({ data: { id, password } });
+      await onSaved();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not remove that skill.");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <div className="mt-8 space-y-8">
+      <form
+        className="panel space-y-4 rounded-2xl p-6"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void savePhoto(photo);
+        }}
+      >
+        <h2 className="text-xl font-bold">About photo</h2>
+        <p className="text-muted">Replace the photo in About Me whenever you want.</p>
+        <img
+          src={photo || "/portrait.jpg"}
+          alt="About preview"
+          className="size-28 rounded-full object-cover ring-4 ring-teal"
+        />
+        <input type="file" accept="image/*" onChange={onPick} className="block text-sm text-muted" />
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="submit"
+            disabled={pending || !photo.startsWith("data:image/")}
+            className="rounded-full bg-teal px-6 py-3 font-medium text-white transition hover:bg-copper disabled:opacity-60"
+          >
+            Save photo
+          </button>
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => void savePhoto("")}
+            className="rounded-full border border-line px-6 py-3 text-ink"
+          >
+            Use original photo
+          </button>
+        </div>
+      </form>
+
+      <form onSubmit={onAddSkill} className="panel space-y-4 rounded-2xl p-6">
+        <h2 className="text-xl font-bold">Skills</h2>
+        <p className="text-muted">These appear under About Me, next to Python, Excel, and SQL.</p>
+        <label className="block">
+          <span className="mb-1 block text-sm text-muted">Skill</span>
+          <input value={label} onChange={(event) => setLabel(event.target.value)} required className={fieldClass()} placeholder="Power BI" />
+        </label>
+        <label className="block">
+          <span className="mb-1 block text-sm text-muted">Short note</span>
+          <input value={note} onChange={(event) => setNote(event.target.value)} className={fieldClass()} placeholder="Dashboards" />
+        </label>
+        <button
+          type="submit"
+          disabled={pending}
+          className="rounded-full bg-teal px-6 py-3 font-medium text-white transition hover:bg-copper disabled:opacity-60"
+        >
+          Add skill
+        </button>
+        <ul className="space-y-3">
+          {skills.map((skill) => (
+            <li key={skill.id} className="flex items-center justify-between gap-3 rounded-xl border border-line px-4 py-3">
+              <span>
+                <span className="font-semibold">{skill.label}</span>
+                {skill.note ? <span className="ml-2 text-sm text-muted">{skill.note}</span> : null}
+              </span>
+              <button type="button" className="text-danger hover:underline" onClick={() => void onRemoveSkill(skill.id)}>
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      </form>
+      {error ? <p className="text-sm text-danger">{error}</p> : null}
+      {savedNote ? <p className="text-sm text-teal">{savedNote}</p> : null}
+    </div>
   );
 }
 

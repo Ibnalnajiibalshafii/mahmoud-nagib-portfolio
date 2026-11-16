@@ -7,6 +7,7 @@ const links = [
   { href: "/#about", label: "About" },
   { href: "/#projects", label: "Projects" },
   { href: "/#services", label: "Services" },
+  { href: "/#social", label: "Social" },
   { href: "/#contact", label: "Contact" },
 ] as const;
 
@@ -15,6 +16,9 @@ const fallbackContact: SiteContact = {
   phone: "+254 745 791 267",
   linkedin: "https://www.linkedin.com/in/mahmoudnagib001",
   location: "Nairobi, Kenya",
+  youtube: "https://www.youtube.com/@mahmoudnagibmotivation",
+  tiktok: "https://www.tiktok.com/@growwithmahmoud",
+  instagram: "https://www.instagram.com/grow.withmahmoud",
 };
 
 export function SiteHeader({
