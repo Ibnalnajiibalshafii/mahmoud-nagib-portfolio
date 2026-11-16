@@ -1,8 +1,8 @@
 import { n as createServerFn } from "./ssr.mjs";
 import { t as assertOwner } from "./projects-CgIS0XqX.mjs";
-import { r as getSql } from "./db-BF_8R8zo.mjs";
+import { r as getSql } from "./db-6j5TSbzF.mjs";
 import { t as createServerRpc } from "./createServerRpc-CN-evIEF.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/site-DJWjBPu-.js
+//#region node_modules/.nitro/vite/services/ssr/assets/site-B2akujxV.js
 var fallbackContact = {
 	email: "mahmuodnagib9@gmail.com",
 	phone: "+254 745 791 267",

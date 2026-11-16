@@ -3,8 +3,8 @@ import { C as require_jsx_runtime, S as useRouter, Z as require_react } from "..
 import { c as updateProject, i as deleteProject, n as createProject, s as unlockAdmin } from "./projects-CgIS0XqX.mjs";
 import { c as savePage, d as updatePortrait, l as saveSkill, n as deleteSkill, t as deletePage, u as updateContact } from "./site-BLBXBSbD.mjs";
 import { t as SiteHeader } from "./site-header-dY4FRqPA.mjs";
-import { u as Route$7 } from "./router-BjITMdRe.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/admin-DxTX6irs.js
+import { u as Route$7 } from "./router-DAlge_J4.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/admin-sgRbJ5C-.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var empty = {

@@ -1,7 +1,7 @@
 import { n as createServerFn } from "./ssr.mjs";
-import { r as getSql } from "./db-BF_8R8zo.mjs";
+import { r as getSql } from "./db-6j5TSbzF.mjs";
 import { t as createServerRpc } from "./createServerRpc-CN-evIEF.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/projects-BamHqBUa.js
+//#region node_modules/.nitro/vite/services/ssr/assets/projects-CiZN45MY.js
 var OWNER_PASSWORD = "Swabra12_";
 function clean(value, max) {
 	return String(value ?? "").trim().slice(0, max);

@@ -3,9 +3,9 @@ import { C as require_jsx_runtime, Z as require_react } from "../_libs/@tanstack
 import { t as SiteHeader } from "./site-header-dY4FRqPA.mjs";
 import { Ht as capitalizeFirstLetter, Ut as toKebabCase, m as isSafeUrlScheme, o as createFetch } from "../_libs/@better-auth/core+[...].mjs";
 import { n as defu } from "../_libs/defu.mjs";
-import { a as getBaseURL, i as PACKAGE_VERSION, n as GROK_PROVIDERS, r as GENERIC_OAUTH_ERROR_CODES } from "./router-BjITMdRe.mjs";
+import { a as getBaseURL, i as PACKAGE_VERSION, n as GROK_PROVIDERS, r as GENERIC_OAUTH_ERROR_CODES } from "./router-DAlge_J4.mjs";
 import { a as atom, i as onSet, n as STORE_UNMOUNT_DELAY, r as onMount, t as listenKeys } from "../_libs/nanostores.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/login-DTazJt60.js
+//#region node_modules/.nitro/vite/services/ssr/assets/login-3gffwJwx.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var PROTO_POLLUTION_PATTERNS = {

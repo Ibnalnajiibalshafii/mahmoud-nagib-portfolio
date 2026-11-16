@@ -1,7 +1,7 @@
 import { C as require_jsx_runtime, b as Link } from "./_libs/@tanstack/react-router+[...].mjs";
 import { t as SiteHeader } from "./_ssr/site-header-dY4FRqPA.mjs";
-import { c as Route$4 } from "./_ssr/router-BjITMdRe.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/_projectId-mrxhFOOv.js
+import { c as Route$4 } from "./_ssr/router-DAlge_J4.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/_projectId-DOX5LEce.js
 var import_jsx_runtime = require_jsx_runtime();
 function ProjectPage() {
 	const project = Route$4.useLoaderData();

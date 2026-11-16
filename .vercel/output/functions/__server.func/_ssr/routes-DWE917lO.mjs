@@ -2,8 +2,8 @@ import { o as __toESM } from "../_runtime.mjs";
 import { C as require_jsx_runtime, Z as require_react, b as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { a as ShoppingCart, c as MapPin, d as Lightbulb, f as GraduationCap, g as ChartColumn, h as ChartPie, i as Table2, l as Mail, m as Database, n as University, o as Phone, p as FolderKanban, u as Linkedin } from "../_libs/lucide-react.mjs";
 import { t as SiteHeader } from "./site-header-dY4FRqPA.mjs";
-import { d as Route$8 } from "./router-BjITMdRe.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-Bn1Ov2lt.js
+import { d as Route$8 } from "./router-DAlge_J4.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-DWE917lO.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var heroPose = {

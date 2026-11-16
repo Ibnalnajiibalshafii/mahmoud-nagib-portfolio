@@ -4,7 +4,7 @@ import { a as __exportAll } from "./ssr.mjs";
 import { a as getProject, o as listProjects } from "./projects-CgIS0XqX.mjs";
 import { a as getPortrait, i as getPage, o as listPages, r as getContact, s as listSkills } from "./site-BLBXBSbD.mjs";
 import { r as TriangleAlert } from "../_libs/lucide-react.mjs";
-import { n as getPglite, t as ensureDbReady } from "./db-BF_8R8zo.mjs";
+import { n as getPglite, t as ensureDbReady } from "./db-6j5TSbzF.mjs";
 import { a as PostgresIntrospector, c as sql, i as PostgresAdapter, n as getKyselyDatabaseType, o as PostgresQueryCompiler, s as CompiledQuery, t as createKyselyAdapter } from "../_libs/@better-auth/kysely-adapter+[...].mjs";
 import { $t as queueAfterTransactionHook, A as base64Url, At as boolean, C as runWithEndpointContext, D as serializeSignedCookie, E as serializeCookie, Ft as object, Gt as createWithSpan, It as optional, Jt as ATTR_OPERATION_ID, Kt as ATTR_CONTEXT, Lt as record, M as decodeProtectedHeader, Mt as literal, N as importJWK, Nt as looseObject, O as filterOutputFields, Ot as any, P as jwtVerify, Pt as number, Qt as getCurrentAdapter, Rt as string, S as getCurrentAuthContext, T as toResponse, Xt as safeJSONParse, Yt as import_src, Zt as getAuthTables, _ as createAuthMiddleware, _n as APIError, a as betterFetch, an as generateId, b as hasRequestState, bn as BASE_ERROR_CODES, c as applyDefaultAccessTokenExpiry, cn as logger, d as findInvalidTrustedProxies, dn as env, en as runWithAdapter, f as getIp, g as createAuthEndpoint, gn as isTest, h as normalizePathname, hn as isProduction, ht as JWTExpired, i as refreshAccessToken, in as initGetFieldName, j as decodeJwt, jt as email, kt as array, l as isLoopbackHost, ln as shouldPublishLog, mn as isDevelopment, n as socialProviders, nn as getBetterAuthVersion, on as createRandomStringGenerator, p as deprecate, qt as ATTR_HOOK_TYPE, r as validateAuthorizationCode, rn as initGetModelName, rt as encode, s as createAuthorizationURL, sn as createLogger, t as SocialProviderListEnum, tn as runWithTransaction, u as createRateLimitKey, v as isAPIError, vn as BetterAuthError, w as createRouter$1, x as runWithRequestState, xn as defineErrorCodes, y as defineRequestState, yn as kAPIErrorHeaderSymbol, zt as union } from "../_libs/@better-auth/core+[...].mjs";
 import { n as string$1, t as boolean$1 } from "../_libs/zod.mjs";
@@ -16,7 +16,7 @@ import { a as utf8ToBytes, i as managedNonce, n as bytesToHex, r as hexToBytes, 
 import { n as defu, t as createDefu } from "../_libs/defu.mjs";
 import { t as Pool } from "../_libs/pg.mjs";
 import { randomBytes } from "node:crypto";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-BjITMdRe.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-DAlge_J4.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function errorMessage(error) {
@@ -400,7 +400,7 @@ var Route$9 = createRootRoute({
 		] })]
 	})
 });
-var $$splitComponentImporter$7 = () => import("./routes-Bn1Ov2lt.mjs");
+var $$splitComponentImporter$7 = () => import("./routes-DWE917lO.mjs");
 var Route$8 = createFileRoute("/")({
 	loader: async () => {
 		const [projects, contact, pages, portrait, skills] = await Promise.all([
@@ -421,7 +421,7 @@ var Route$8 = createFileRoute("/")({
 	head: () => ({ meta: [{ title: "Mahmoud Nagib | Junior Data Analyst" }] }),
 	component: lazyRouteComponent($$splitComponentImporter$7, "component")
 });
-var $$splitComponentImporter$6 = () => import("./admin-DxTX6irs.mjs");
+var $$splitComponentImporter$6 = () => import("./admin-sgRbJ5C-.mjs");
 var Route$7 = createFileRoute("/admin")({
 	loader: async () => {
 		const [projects, contact, pages, portrait, skills] = await Promise.all([
@@ -442,13 +442,13 @@ var Route$7 = createFileRoute("/admin")({
 	head: () => ({ meta: [{ title: "Admin | Mahmoud Nagib" }] }),
 	component: lazyRouteComponent($$splitComponentImporter$6, "component")
 });
-var $$splitComponentImporter$5 = () => import("./login-DTazJt60.mjs");
+var $$splitComponentImporter$5 = () => import("./login-3gffwJwx.mjs");
 var Route$6 = createFileRoute("/login")({
 	head: () => ({ meta: [{ title: "Sign in | Mahmoud Nagib" }] }),
 	component: lazyRouteComponent($$splitComponentImporter$5, "component")
 });
 var $$splitNotFoundComponentImporter$1 = () => import("../_slug-ClyllphC.mjs");
-var $$splitComponentImporter$4 = () => import("../_slug-DfBC0aLX.mjs");
+var $$splitComponentImporter$4 = () => import("../_slug-CMDBK3zf.mjs");
 var Route$5 = createFileRoute("/p/$slug")({
 	loader: async ({ params }) => {
 		const page = await getPage({ data: params.slug });
@@ -460,7 +460,7 @@ var Route$5 = createFileRoute("/p/$slug")({
 	notFoundComponent: lazyRouteComponent($$splitNotFoundComponentImporter$1, "notFoundComponent")
 });
 var $$splitNotFoundComponentImporter = () => import("../_projectId-Bb-53Lnx.mjs");
-var $$splitComponentImporter$3 = () => import("../_projectId-mrxhFOOv.mjs");
+var $$splitComponentImporter$3 = () => import("../_projectId-DOX5LEce.mjs");
 var Route$4 = createFileRoute("/projects/$projectId")({
 	loader: async ({ params }) => {
 		const project = await getProject({ data: Number(params.projectId) });
@@ -1015,7 +1015,7 @@ var branchPerf = [
 		csat: 950
 	}
 ];
-var $$splitComponentImporter$2 = () => import("./bank-BAp5jn8f.mjs");
+var $$splitComponentImporter$2 = () => import("./bank-ONB5r3Rs.mjs");
 var Route$3 = createFileRoute("/work/bank")({
 	head: () => ({ meta: [{ title: "Bank branches · Mahmoud Nagib" }] }),
 	component: lazyRouteComponent($$splitComponentImporter$2, "component")
